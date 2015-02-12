@@ -1,0 +1,31 @@
+0043
+012650      # USAF weather station identifier
+99999       # WBAN weather station identifier
+19490324    # observation date
+1200        # observation time
+4
++62300      # latitude (degrees x 1000)
++010750     # longitude (degrees x 1000)
+FM-12
++0485       # elevation (meters)
+99999
+V020
+270         # wind direction (degrees)
+1           # quality code
+N
+0046
+1
+22000       # sky ceiling height (meters)
+1           # quality code
+C
+N
+050000      # visibility distance (meters)
+1           # quality code
+N
+9
++0111       # air temperature (degrees Celsius x 10)
+1           # quality code
++9          # dew point temperature (degrees Celsius x 10)
+9999        # quality code
+99          # atmospheric pressure (hectopascals x 10)
+9999        # quality code
