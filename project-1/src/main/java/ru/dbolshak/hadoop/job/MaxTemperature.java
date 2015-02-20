@@ -10,6 +10,8 @@ import ru.dbolshak.hadoop.mapreduce.MaxTemperatureMapper;
 import ru.dbolshak.hadoop.mapreduce.MaxTemperatureReducer;
 
 public class MaxTemperature {
+    private static final boolean VERBOSE = true;
+
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
             System.err.println("Usage: MaxTemperature <input path> <output path>");
@@ -28,6 +30,6 @@ public class MaxTemperature {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        System.exit(job.waitForCompletion(VERBOSE) ? 0 : 1);
     }
 }

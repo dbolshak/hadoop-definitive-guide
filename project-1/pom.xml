@@ -37,17 +37,27 @@
             <scope>test</scope>
         </dependency>
         <!-- Hadoop test artifact for running mini clusters -->
-        <!--dependency>
+        <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-minicluster</artifactId>
             <version>${hadoop.version}</version>
             <scope>test</scope>
-        </dependency-->
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.4-atlassian-1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.4-atlassian-1</version>
+        </dependency>
 
     </dependencies>
 
     <build>
-        <finalName>hadoop-definitive-guide</finalName>
+        <finalName>>project-1</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
