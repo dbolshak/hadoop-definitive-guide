@@ -1,6 +1,7 @@
 package ru.dbolshak.hadoop.filesystem;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -89,6 +90,21 @@ public class ShowFileStatusTest {
         }
     }
 
+    @Test
+    public void readFile() throws IOException {
+        Path file = new Path(FILE_PATH);
+        FSDataInputStream inputStream = fs.open(file);
+        byte[] buffer = new byte[Integer.valueOf(String.valueOf(FILE_LEN))];
+        int receivedBytes = inputStream.read(buffer);
+        String fileContent = new String(buffer, FILE_ENCODING);
+
+        assertThat(receivedBytes, is(longToInt(FILE_LEN)));
+        assertThat(fileContent, is(FILE_CONTENT));
+    }
+
+    private static int longToInt(Long value) {
+        return Integer.valueOf(String.valueOf(value));
+    }
     private void testFileSystemEntry(String path) throws IOException {
         long   fileLen           = FILE_LEN;
         long   dfsBlockSize      = DFS_BLOCK_SIZE;
