@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class MaxTemperatureTest {
-    private static final int    A_YEAR_FOR_TEST               = 1950;
-    private static final int    LOW_AIR_TEMPERATURE           = -11;
-    private static final int    HIGH_AIR_TEMPERATURE          = 10;
-    private static final int    AIR_TEMPERATURE_CODE_QUALITY  = 1;
+    private static final int A_YEAR_FOR_TEST = 1950;
+    private static final int LOW_AIR_TEMPERATURE = -11;
+    private static final int HIGH_AIR_TEMPERATURE = 10;
+    private static final int AIR_TEMPERATURE_CODE_QUALITY = 1;
 
     private static Text createYearAsText() {
         return new Text(String.valueOf(A_YEAR_FOR_TEST));

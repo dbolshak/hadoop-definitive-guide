@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
 
 /**
- * Created by dbolshak on 20/02/15.
+ * This classes shows a basic function of FileSystem in Hadoop
  */
 public class ShowFileStatusTest {
     private static final String TEST_BUILD_DATA_DIR_PROPERTY = "test.build.data";
@@ -36,18 +36,22 @@ public class ShowFileStatusTest {
     private static final String USER_NAME_PROPERTY = "user.name";
     private static final String USERNAME = "supergroup";
 
-    private static final Long FILE_LEN =          Long.valueOf(FILE_CONTENT.length());
-    private static final Long DFS_BLOCK_SIZE      = Long.valueOf(128 * 1024 * 1024);
+    private static final Long FILE_LEN = (long) FILE_CONTENT.length();
+    private static final Long DFS_BLOCK_SIZE = (long) (128 * 1024 * 1024);
     private static final Short REPLICATION_FACTOR = 1;
 
     private MiniDFSCluster cluster;
     private FileSystem fs;
 
+    private static int getFileLenAsInteger() {
+        return Integer.valueOf(String.valueOf(FILE_LEN));
+    }
+
     @Before
     public void setUp() throws IOException {
         Configuration conf = prepareConfiguration();
         buildClusterAndFileSystem(conf);
-        createFileWithContent(FILE_PATH, FILE_CONTENT);
+        createFile();
     }
 
     private Configuration prepareConfiguration() {
@@ -58,16 +62,17 @@ public class ShowFileStatusTest {
         return conf;
     }
 
-    private void buildClusterAndFileSystem(Configuration conf) throws IOException{
+    private void buildClusterAndFileSystem(Configuration conf) throws IOException {
         cluster = new MiniDFSCluster.Builder(conf).build();
         fs = cluster.getFileSystem();
     }
 
-    private void createFileWithContent(String filePath, String content) throws IOException{
-        OutputStream out = fs.create(new Path(filePath));
-        out.write(content.getBytes(FILE_ENCODING));
+    private void createFile() throws IOException {
+        OutputStream out = fs.create(new Path(FILE_PATH));
+        out.write(FILE_CONTENT.getBytes(FILE_ENCODING));
         out.close();
     }
+
     @After
     public void shutDownCluster() throws IOException {
         if (fs != null) {
@@ -98,25 +103,23 @@ public class ShowFileStatusTest {
         int receivedBytes = inputStream.read(buffer);
         String fileContent = new String(buffer, FILE_ENCODING);
 
-        assertThat(receivedBytes, is(longToInt(FILE_LEN)));
+        assertThat(receivedBytes, is(getFileLenAsInteger()));
         assertThat(fileContent, is(FILE_CONTENT));
     }
 
-    private static int longToInt(Long value) {
-        return Integer.valueOf(String.valueOf(value));
-    }
     private void testFileSystemEntry(String path) throws IOException {
-        long   fileLen           = FILE_LEN;
-        long   dfsBlockSize      = DFS_BLOCK_SIZE;
-        short  replicationFactor = REPLICATION_FACTOR;
-        String permissions       = PERMISSIONS_FOR_FILE;
+        long fileLen = FILE_LEN;
+        long dfsBlockSize = DFS_BLOCK_SIZE;
+        short replicationFactor = REPLICATION_FACTOR;
+        String permissions = PERMISSIONS_FOR_FILE;
 
+        //noinspection StringEquality
         boolean isDir = DIR_PATH == path;
         if (isDir) {
-            fileLen           = 0;
-            dfsBlockSize      = 0;
+            fileLen = 0;
+            dfsBlockSize = 0;
             replicationFactor = 0;
-            permissions       = PERMISSIONS_FOR_DIR;
+            permissions = PERMISSIONS_FOR_DIR;
         }
 
         FileStatus stat = getFileStatus(path);
