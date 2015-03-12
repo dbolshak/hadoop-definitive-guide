@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 /**
  * Created by dbolshak on 12/03/15.
  */
@@ -24,7 +27,7 @@ public class ConfigurationPrinterTest {
     @Test
     public void run() throws Exception {
         int exitCode = ToolRunner.run(configurationPrinter, new String[]{"-D color=yellow "});
-        System.exit(exitCode);
+        assertThat(exitCode, is(0));
     }
 }
 
