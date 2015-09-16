@@ -39,6 +39,8 @@ public class ShowFileStatusTest {
     private static final Long FILE_LEN = (long) FILE_CONTENT.length();
     private static final Long DFS_BLOCK_SIZE = (long) (128 * 1024 * 1024);
     private static final Short REPLICATION_FACTOR = 1;
+    private static final TestingProperties FILE_PROPERTIES = new TestingProperties(FILE_LEN, DFS_BLOCK_SIZE, REPLICATION_FACTOR, PERMISSIONS_FOR_FILE);
+    private static final TestingProperties DIR_PROPERTIES = new TestingProperties(0L, 0L, (short)0, PERMISSIONS_FOR_DIR);
 
     private MiniDFSCluster cluster;
     private FileSystem fs;
@@ -68,9 +70,9 @@ public class ShowFileStatusTest {
     }
 
     private void createFile() throws IOException {
-        OutputStream out = fs.create(new Path(FILE_PATH));
-        out.write(FILE_CONTENT.getBytes(FILE_ENCODING));
-        out.close();
+        try (OutputStream out = fs.create(new Path(FILE_PATH))) {
+            out.write(FILE_CONTENT.getBytes(FILE_ENCODING));
+        }
     }
 
     @After
@@ -108,27 +110,17 @@ public class ShowFileStatusTest {
     }
 
     private void testFileSystemEntry(String path) throws IOException {
-        long fileLen = FILE_LEN;
-        long dfsBlockSize = DFS_BLOCK_SIZE;
-        short replicationFactor = REPLICATION_FACTOR;
-        String permissions = PERMISSIONS_FOR_FILE;
-
         //noinspection StringEquality
         boolean isDir = DIR_PATH == path;
-        if (isDir) {
-            fileLen = 0;
-            dfsBlockSize = 0;
-            replicationFactor = 0;
-            permissions = PERMISSIONS_FOR_DIR;
-        }
 
+        TestingProperties testingProperties = isDir ? DIR_PROPERTIES : FILE_PROPERTIES;
         FileStatus stat = getFileStatus(path);
 
         assertThat(stat.isDirectory(), is(isDir));
-        assertThat(stat.getLen(), is(fileLen));
-        assertThat(stat.getBlockSize(), is(dfsBlockSize));
-        assertThat(stat.getReplication(), is(replicationFactor));
-        assertThat(stat.getPermission().toString(), is(permissions));
+        assertThat(stat.getLen(), is(testingProperties.getFileLen()));
+        assertThat(stat.getBlockSize(), is(testingProperties.getDfsBlockSize()));
+        assertThat(stat.getReplication(), is(testingProperties.getReplicationFactor()));
+        assertThat(stat.getPermission().toString(), is(testingProperties.getPermissions()));
 
         assertThat(stat.getPath().toUri().getPath(), is(path));
         assertThat(stat.getModificationTime(), is(lessThanOrEqualTo(System.currentTimeMillis())));
@@ -139,5 +131,36 @@ public class ShowFileStatusTest {
     private FileStatus getFileStatus(String path) throws IOException {
         Path file = new Path(path);
         return fs.getFileStatus(file);
+    }
+
+    private static class TestingProperties {
+        private final long fileLen;
+        private final long dfsBlockSize;
+        private final short replicationFactor;
+        private final String permissions;
+
+
+        TestingProperties(long fileLen, long dfsBlockSize, short replicationFactor, String permissions) {
+            this.fileLen = fileLen;
+            this.dfsBlockSize = dfsBlockSize;
+            this.replicationFactor = replicationFactor;
+            this.permissions = permissions;
+        }
+
+        long getFileLen() {
+            return fileLen;
+        }
+
+        long getDfsBlockSize() {
+            return dfsBlockSize;
+        }
+
+        short getReplicationFactor() {
+            return replicationFactor;
+        }
+
+        String getPermissions() {
+            return permissions;
+        }
     }
 }

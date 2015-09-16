@@ -33,7 +33,7 @@ public class ConfTest {
     }
 
     @Test
-    public void finalPropertiesCannotBeOverriden() {
+    public void finalPropertiesCannotBeOverridden() {
         conf.addResource("configuration-2.xml");
         assertThat(conf.get("weight"), is("heavy"));
     }
@@ -53,7 +53,7 @@ public class ConfTest {
     }
 
     @Test
-    public void tryingToOverrideUnexistingProperty() {
+    public void tryingToOverrideUnexactingProperty() {
         System.setProperty("length", "2");
         assertThat(conf.get("length"), is((String) null));
     }

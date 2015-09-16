@@ -1,13 +1,5 @@
 package ru.dbolshak.hadoop;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
@@ -15,9 +7,17 @@ import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.mapred.ClusterMapReduceTestCase;
 import ru.dbolshak.hadoop.job.MaxTemperatureDriver;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+
 public class MaxTemperatureDriverMiniTest extends ClusterMapReduceTestCase {
 
-    public static class OutputLogFilter implements PathFilter {
+    private static class OutputLogFilter implements PathFilter {
         public boolean accept(Path path) {
             return !path.getName().startsWith("_");
         }
@@ -34,7 +34,6 @@ public class MaxTemperatureDriverMiniTest extends ClusterMapReduceTestCase {
         super.setUp();
     }
 
-    // Not marked with @Test since ClusterMapReduceTestCase is a JUnit 3 test case
     public void test() throws Exception {
         Configuration conf = createJobConf();
 

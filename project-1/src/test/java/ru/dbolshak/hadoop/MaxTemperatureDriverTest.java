@@ -3,7 +3,6 @@ package ru.dbolshak.hadoop;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -32,10 +31,10 @@ public class MaxTemperatureDriverTest {
     }
 
     private static String readLineFromFile() {
-        return buildLineWithKnownValues();
+        return buildLineWithWellKnownValues();
     }
 
-    private static String buildLineWithKnownValues() {
+    private static String buildLineWithWellKnownValues() {
         return String.format(
                 "004301199099999%d051518004+68750+023550FM-12+038299999V0203201N00261220001CN9999999N9%05d%d+99999999999",
                 A_YEAR_FOR_TEST, LOW_AIR_TEMPERATURE, AIR_TEMPERATURE_CODE_QUALITY);
@@ -77,19 +76,20 @@ public class MaxTemperatureDriverTest {
         conf.set("mapreduce.framework.name", "local");
         conf.setInt("mapreduce.task.io.sort.mb", 1);
 
+        MaxTemperatureDriver driver = new MaxTemperatureDriver();
+        driver.setConf(conf);
+
         Path input = new Path(this.getClass().getClassLoader().getResource ("sample.txt").toString());
         Path output = new Path("output");
         FileSystem fs = FileSystem.getLocal(conf);
         fs.delete(output, true); // delete old output
-        MaxTemperatureDriver driver = new MaxTemperatureDriver();
-        driver.setConf(conf);
         int exitCode = driver.run(new String[] {input.toString(), output.toString() });
 
         assertThat(exitCode, is(0));
-        checkOutput(conf, output, fs);
+        checkOutput(output, fs);
     }
 
-    private void checkOutput(Configuration conf, Path output, FileSystem fs) throws IOException {
+    private void checkOutput(Path output, FileSystem fs) throws IOException {
         InputStream inputStream = fs.open(new Path(output, "part-r-00000"));
         byte[] mapReduceOutput = new byte[17];
         inputStream.read(mapReduceOutput);

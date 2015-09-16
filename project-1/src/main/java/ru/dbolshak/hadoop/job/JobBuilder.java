@@ -13,10 +13,10 @@ import java.io.IOException;
 /**
  * Created by dbolshak on 16/03/15.
  */
-public class JobBuilder {
+class JobBuilder {
     public static Job parseInputAndOutput(Tool tool, Configuration conf, String[] args) throws IOException {
         if (args.length != 2) {
-            printUsage(tool, "<input> <output>");
+            printUsage(tool);
             return null;
         }
 
@@ -27,8 +27,8 @@ public class JobBuilder {
         return job;
     }
 
-    public static void printUsage(Tool tool, String extraArgsUsage) {
-        System.err.printf("Usage: %s [genericOptions] %s\n\n", tool.getClass().getSimpleName(), extraArgsUsage);
+    private static void printUsage(Tool tool) {
+        System.err.printf("Usage: %s [genericOptions] %s\n\n", tool.getClass().getSimpleName(), "<input> <output>");
         GenericOptionsParser.printGenericCommandUsage(System.err);
     }
 }
